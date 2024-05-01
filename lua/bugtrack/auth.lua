@@ -1,10 +1,9 @@
 local curl = require("plenary.curl")
+local config = require("bugtrack.config")
 
 local M = {}
 
--- TODO: external config
-M._api_endpoint = "http://localhost:8080/auth/"
-M._ui_endpoint = "http://localhost:8000/auth/"
+M._service_path = "auth/"
 
 M._jwt_storage = vim.fn.stdpath("data") .. "/bugtrack.txt"
 M._save_jwt = function(jwt)
@@ -37,14 +36,16 @@ M.auth_header = function()
 end
 
 M.signup = function()
-    local succsess, _ = pcall(vim.fn.system, "xdg-open " .. M._ui_endpoint .. "signup")
+    local url = config.options.ui_endpoint .. M._service_path .. "signup"
+    local succsess, _ = pcall(vim.fn.system, "xdg-open " .. url)
     if not succsess then
         error("Error: Could not open default browser")
     end
 end
 
 M.signin = function(username, password)
-    local response = curl.post(M._api_endpoint .. "signin", {
+    local url = config.options.api_endpoint .. M._service_path .. "signin"
+    local response = curl.post(url, {
         body = vim.fn.json_encode({
             username = username,
             password = password

@@ -24,10 +24,10 @@ return function()
                     return
                 end
                 local password = vim.fn.inputsecret("Password: ")
-                local success, err = pcall(auth.signin, username, password)
+                local success, _ = pcall(auth.signin, username, password)
                 if not success then
                     vim.schedule(function()
-                        vim.print("Authentication failed!" .. err)
+                        vim.print("Authentication failed!")
                     end)
                 else
                     vim.schedule(function()
